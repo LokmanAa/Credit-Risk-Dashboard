@@ -4,7 +4,6 @@ import joblib
 import plotly.graph_objects as go
 import gc
 import requests
-import pickle
 
 # Affichage de la jauge de risque
 def plot_probability(probability, threshold):
@@ -40,15 +39,14 @@ def load_data_from_github():
     columns = df.columns.tolist()
     return df, index, columns
 
-# Chargement du modèle depuis GitHub
+# Chargement du modèle depuis GitHub avec joblib
 @st.cache_resource
 def load_model_from_github():
     model_url = 'https://github.com/LokmanAa/Credit-Risk-Dashboard/blob/main/models/model.pkl?raw=true'
     response = requests.get(model_url)
     with open('model.pkl', 'wb') as f:
         f.write(response.content)
-    with open('model.pkl', 'rb') as f:
-        model = pickle.load(f)  # Utilisation de pickle pour charger le modèle au format pkl
+    model = joblib.load('model.pkl')  # Utilisation de joblib pour charger le modèle
     return model
 
 # Prédiction avec le modèle chargé
@@ -79,7 +77,7 @@ if predict_btn:  # Clic sur le bouton de prédiction
         data = df.loc[df.index == client_id, :].values.tolist()[0]
         prediction_prob = predict(model, data)
         probability = prediction_prob[1]  # Probabilité d'appartenir à la classe 1
-        threshold = 0.27  # Exemple de seuil de décision, à ajuster si besoin
+        threshold = 0.5  # Exemple de seuil de décision, à ajuster si besoin
 
         proba_plot.plotly_chart(plot_probability(probability, threshold))
         proba_text.write(f'La probabilité d\'appartenir à la classe 1 est de **{round(probability * 100, 2)}%**, pour un seuil de décision de **{round(threshold * 100, 2)}%**.\n')
@@ -90,4 +88,3 @@ if predict_btn:  # Clic sur le bouton de prédiction
         
         del data, prediction_prob
         gc.collect()
-
