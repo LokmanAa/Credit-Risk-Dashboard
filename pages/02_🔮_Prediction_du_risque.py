@@ -54,7 +54,7 @@ def load_data(path):
 
 sentences = ['n\'est **pas à risque**', 'est **à risque**']
 
-FLASK_URI = 'https://prediction-bank-a50ad8910f87.herokuapp.com/predict_flask'
+FLASK_URI = 'https://projet8oc-4cfcbbcf7bc7.herokuapp.com/'
 AZURE_URI = 'https://bank-app-prediction.azurewebsites.net/predict_flask'
 FLASK_LOCAL_URI = 'http://127.0.0.1:8000/predict_flask'
 
